@@ -14,7 +14,330 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      battle_sessions: {
+        Row: {
+          battle_type: Database["public"]["Enums"]["battle_type"]
+          duration_minutes: number
+          ended_at: string | null
+          gold_earned: number
+          grimoire_audio_url: string | null
+          grimoire_text: string | null
+          id: string
+          interruptions: number
+          result: Database["public"]["Enums"]["battle_result"]
+          started_at: string
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          battle_type: Database["public"]["Enums"]["battle_type"]
+          duration_minutes: number
+          ended_at?: string | null
+          gold_earned?: number
+          grimoire_audio_url?: string | null
+          grimoire_text?: string | null
+          id?: string
+          interruptions?: number
+          result?: Database["public"]["Enums"]["battle_result"]
+          started_at?: string
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          battle_type?: Database["public"]["Enums"]["battle_type"]
+          duration_minutes?: number
+          ended_at?: string | null
+          gold_earned?: number
+          grimoire_audio_url?: string | null
+          grimoire_text?: string | null
+          id?: string
+          interruptions?: number
+          result?: Database["public"]["Enums"]["battle_result"]
+          started_at?: string
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      books: {
+        Row: {
+          author: string | null
+          category: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          pages_read: number
+          status: Database["public"]["Enums"]["book_status"]
+          target_date: string | null
+          title: string
+          total_pages: number
+          updated_at: string
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          author?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          pages_read?: number
+          status?: Database["public"]["Enums"]["book_status"]
+          target_date?: string | null
+          title: string
+          total_pages: number
+          updated_at?: string
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          author?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          pages_read?: number
+          status?: Database["public"]["Enums"]["book_status"]
+          target_date?: string | null
+          title?: string
+          total_pages?: number
+          updated_at?: string
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "books_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          gold: number
+          id: string
+          last_active_date: string | null
+          level: number
+          rank: Database["public"]["Enums"]["player_rank"]
+          streak_days: number
+          total_battles_won: number
+          total_pages_read: number
+          total_water_ml: number
+          updated_at: string
+          xp_discipline: number
+          xp_intelligence: number
+          xp_vitality: number
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          gold?: number
+          id: string
+          last_active_date?: string | null
+          level?: number
+          rank?: Database["public"]["Enums"]["player_rank"]
+          streak_days?: number
+          total_battles_won?: number
+          total_pages_read?: number
+          total_water_ml?: number
+          updated_at?: string
+          xp_discipline?: number
+          xp_intelligence?: number
+          xp_vitality?: number
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          gold?: number
+          id?: string
+          last_active_date?: string | null
+          level?: number
+          rank?: Database["public"]["Enums"]["player_rank"]
+          streak_days?: number
+          total_battles_won?: number
+          total_pages_read?: number
+          total_water_ml?: number
+          updated_at?: string
+          xp_discipline?: number
+          xp_intelligence?: number
+          xp_vitality?: number
+        }
+        Relationships: []
+      }
+      purchases: {
+        Row: {
+          gold_spent: number
+          id: string
+          item_id: string
+          purchased_at: string
+          user_id: string
+        }
+        Insert: {
+          gold_spent: number
+          id?: string
+          item_id: string
+          purchased_at?: string
+          user_id: string
+        }
+        Update: {
+          gold_spent?: number
+          id?: string
+          item_id?: string
+          purchased_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "shop_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchases_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reading_sessions: {
+        Row: {
+          book_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          pages_read: number
+          reading_speed: number | null
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          book_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pages_read: number
+          reading_speed?: number | null
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          book_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pages_read?: number
+          reading_speed?: number | null
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reading_sessions_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reading_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shop_items: {
+        Row: {
+          cost_gold: number
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean
+          is_consumable: boolean
+          name: string
+        }
+        Insert: {
+          cost_gold: number
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          is_consumable?: boolean
+          name: string
+        }
+        Update: {
+          cost_gold?: number
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          is_consumable?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
+      vitality_logs: {
+        Row: {
+          id: string
+          logged_at: string
+          user_id: string
+          water_ml: number
+          workout_completed: boolean
+          workout_type: string | null
+          xp_earned: number
+        }
+        Insert: {
+          id?: string
+          logged_at?: string
+          user_id: string
+          water_ml?: number
+          workout_completed?: boolean
+          workout_type?: string | null
+          xp_earned?: number
+        }
+        Update: {
+          id?: string
+          logged_at?: string
+          user_id?: string
+          water_ml?: number
+          workout_completed?: boolean
+          workout_type?: string | null
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vitality_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +346,16 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      battle_result: "victory" | "defeat" | "abandoned"
+      battle_type: "minion" | "boss"
+      book_status: "active" | "paused" | "completed" | "dropped"
+      player_rank:
+        | "adormecido"
+        | "desperto"
+        | "peregrino"
+        | "soberano"
+        | "arauto"
+        | "singularidade"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +482,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      battle_result: ["victory", "defeat", "abandoned"],
+      battle_type: ["minion", "boss"],
+      book_status: ["active", "paused", "completed", "dropped"],
+      player_rank: [
+        "adormecido",
+        "desperto",
+        "peregrino",
+        "soberano",
+        "arauto",
+        "singularidade",
+      ],
+    },
   },
 } as const
