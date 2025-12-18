@@ -1,147 +1,98 @@
-import { useState, useMemo } from 'react';
-import { Header } from '@/components/dashboard/Header';
-import { StatsCard } from '@/components/dashboard/StatsCard';
-import { ProductCard } from '@/components/dashboard/ProductCard';
-import { AddProductModal } from '@/components/dashboard/AddProductModal';
-import { ProductDetailsModal } from '@/components/dashboard/ProductDetailsModal';
-import { mockProducts, mockPriceHistory, mockStats } from '@/data/mockData';
-import { Product } from '@/types/product';
-import { Package, Activity, TrendingDown, Brain } from 'lucide-react';
-import { Toaster } from '@/components/ui/toaster';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
+import { PlayerCard } from '@/components/rpg/PlayerCard';
+import { QuickActions } from '@/components/rpg/QuickActions';
+import { TodayProgress } from '@/components/rpg/TodayProgress';
+import { Button } from '@/components/ui/button';
+import { Settings, LogOut, Loader2, Swords } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
-const Index = () => {
-  const [products, setProducts] = useState(mockProducts);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+export default function Index() {
+  const { user, loading: authLoading, signOut } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const filteredProducts = useMemo(() => {
-    if (!searchQuery.trim()) return products;
-    const query = searchQuery.toLowerCase();
-    return products.filter(p => 
-      p.name.toLowerCase().includes(query) ||
-      p.lastVerdict.toLowerCase().includes(query)
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast({
+      title: 'Até logo!',
+      description: 'Você saiu da sua conta.',
+    });
+    navigate('/auth');
+  };
+
+  const handleNavigate = (section: string) => {
+    toast({
+      title: 'Em breve!',
+      description: `O módulo "${section}" será implementado em seguida.`,
+    });
+  };
+
+  if (authLoading || profileLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+          <p className="text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
     );
-  }, [products, searchQuery]);
+  }
 
-  const handleAddProduct = (url: string, targetPrice: number) => {
-    const newProduct: Product = {
-      id: `${Date.now()}`,
-      name: 'Novo Produto (Carregando...)',
-      url,
-      imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop',
-      currentPrice: 0,
-      targetPrice,
-      status: 'ativo',
-      lastVerdict: 'Análise pendente',
-      sentimentScore: 0,
-      verdictType: 'neutro',
-      pros: [],
-      cons: [],
-      lastUpdated: new Date()
-    };
-    setProducts(prev => [newProduct, ...prev]);
-  };
-
-  const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-    setIsDetailsModalOpen(true);
-  };
+  if (!user || !profile) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
-      <Header 
-        onAddProduct={() => setIsAddModalOpen(true)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
-
-      <main className="container mx-auto px-4 py-8">
-        {/* Stats Grid */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatsCard
-            title="Total de Produtos"
-            value={mockStats.totalProducts}
-            icon={Package}
-            delay={0}
-          />
-          <StatsCard
-            title="Monitorando Ativamente"
-            value={mockStats.activeProducts}
-            icon={Activity}
-            trend={{ value: 12, isPositive: true }}
-            delay={100}
-          />
-          <StatsCard
-            title="Quedas de Preço (7 dias)"
-            value={mockStats.priceDrops}
-            icon={TrendingDown}
-            delay={200}
-          />
-          <StatsCard
-            title="Sentimento Médio"
-            value={`${mockStats.avgSentiment}/10`}
-            icon={Brain}
-            delay={300}
-          />
-        </section>
-
-        {/* Products Section */}
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold">Produtos Monitorados</h2>
-              <p className="text-muted-foreground">
-                {filteredProducts.length} produto{filteredProducts.length !== 1 ? 's' : ''} encontrado{filteredProducts.length !== 1 ? 's' : ''}
-              </p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-lg border-b border-border/50">
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+              <Swords className="h-4 w-4 text-primary" />
             </div>
+            <span className="font-bold text-foreground">Focus RPG</span>
           </div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Settings className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8"
+              onClick={handleSignOut}
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </header>
 
-          {filteredProducts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center animate-fade-in">
-              <div className="rounded-full bg-secondary p-6 mb-4">
-                <Package className="h-12 w-12 text-muted-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Nenhum produto encontrado</h3>
-              <p className="text-muted-foreground max-w-md">
-                {searchQuery 
-                  ? 'Tente ajustar sua busca ou adicione novos produtos para monitorar.'
-                  : 'Comece adicionando produtos para monitorar preços e análises de IA.'
-                }
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((product, index) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onClick={() => handleProductClick(product)}
-                  delay={index * 100}
-                />
-              ))}
-            </div>
-          )}
-        </section>
+      {/* Main Content */}
+      <main className="px-4 py-4 pb-24 space-y-4 max-w-lg mx-auto">
+        {/* Player Card */}
+        <PlayerCard profile={profile} />
+
+        {/* Today's Progress */}
+        <TodayProgress profile={profile} />
+
+        {/* Quick Actions */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-muted-foreground px-1">Ações Rápidas</h3>
+          <QuickActions onNavigate={handleNavigate} />
+        </div>
       </main>
-
-      <AddProductModal
-        open={isAddModalOpen}
-        onOpenChange={setIsAddModalOpen}
-        onAdd={handleAddProduct}
-      />
-
-      <ProductDetailsModal
-        product={selectedProduct}
-        priceHistory={mockPriceHistory}
-        open={isDetailsModalOpen}
-        onOpenChange={setIsDetailsModalOpen}
-      />
-
-      <Toaster />
     </div>
   );
-};
-
-export default Index;
+}
