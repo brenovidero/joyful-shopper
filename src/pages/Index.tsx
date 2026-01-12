@@ -35,6 +35,10 @@ export default function Index() {
       navigate('/battle');
       return;
     }
+    if (section === 'quests') {
+      navigate('/quests');
+      return;
+    }
     toast({
       title: 'Em breve!',
       description: `O módulo "${section}" será implementado em seguida.`,
