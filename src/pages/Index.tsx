@@ -31,6 +31,10 @@ export default function Index() {
   };
 
   const handleNavigate = (section: string) => {
+    if (section === 'battle') {
+      navigate('/battle');
+      return;
+    }
     toast({
       title: 'Em breve!',
       description: `O módulo "${section}" será implementado em seguida.`,
