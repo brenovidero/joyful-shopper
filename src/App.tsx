@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import Battle from "./pages/Battle";
 import Quests from "./pages/Quests";
 import Vitality from "./pages/Vitality";
+import Stats from "./pages/Stats";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/battle" element={<Battle />} />
             <Route path="/quests" element={<Quests />} />
             <Route path="/vitality" element={<Vitality />} />
+            <Route path="/stats" element={<Stats />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
