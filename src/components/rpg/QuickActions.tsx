@@ -1,4 +1,4 @@
-import { Book, Swords, Droplets, Dumbbell, BarChart3, ShoppingBag } from 'lucide-react';
+import { Book, Swords, Heart, BarChart3, ShoppingBag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface QuickAction {
@@ -34,20 +34,12 @@ export function QuickActions({ onNavigate }: QuickActionsProps) {
       onClick: () => onNavigate('battle'),
     },
     {
-      id: 'water',
-      icon: <Droplets className="h-6 w-6" />,
-      label: 'Água',
+      id: 'vitality',
+      icon: <Heart className="h-6 w-6" />,
+      label: 'Vitalidade',
       color: 'text-cyan-400',
       bgColor: 'bg-cyan-500/20 hover:bg-cyan-500/30',
-      onClick: () => onNavigate('water'),
-    },
-    {
-      id: 'workout',
-      icon: <Dumbbell className="h-6 w-6" />,
-      label: 'Treino',
-      color: 'text-emerald-400',
-      bgColor: 'bg-emerald-500/20 hover:bg-emerald-500/30',
-      onClick: () => onNavigate('workout'),
+      onClick: () => onNavigate('vitality'),
     },
     {
       id: 'stats',

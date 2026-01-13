@@ -39,6 +39,10 @@ export default function Index() {
       navigate('/quests');
       return;
     }
+    if (section === 'vitality') {
+      navigate('/vitality');
+      return;
+    }
     toast({
       title: 'Em breve!',
       description: `O módulo "${section}" será implementado em seguida.`,
