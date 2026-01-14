@@ -1,4 +1,4 @@
-import { Book, Swords, Heart, BarChart3, ShoppingBag } from 'lucide-react';
+import { Book, Swords, Heart, BarChart3, ShoppingBag, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface QuickAction {
@@ -56,6 +56,14 @@ export function QuickActions({ onNavigate }: QuickActionsProps) {
       color: 'text-yellow-400',
       bgColor: 'bg-yellow-500/20 hover:bg-yellow-500/30',
       onClick: () => onNavigate('shop'),
+    },
+    {
+      id: 'communities',
+      icon: <Users className="h-6 w-6" />,
+      label: 'Comunidades',
+      color: 'text-orange-400',
+      bgColor: 'bg-orange-500/20 hover:bg-orange-500/30',
+      onClick: () => onNavigate('communities'),
     },
   ];
 

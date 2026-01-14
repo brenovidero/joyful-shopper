@@ -11,6 +11,8 @@ import Quests from "./pages/Quests";
 import Vitality from "./pages/Vitality";
 import Stats from "./pages/Stats";
 import Shop from "./pages/Shop";
+import Communities from "./pages/Communities";
+import CommunityDetails from "./pages/CommunityDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
             <Route path="/vitality" element={<Vitality />} />
             <Route path="/stats" element={<Stats />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/communities" element={<Communities />} />
+            <Route path="/community/:id" element={<CommunityDetails />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
