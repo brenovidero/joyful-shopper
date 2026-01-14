@@ -31,26 +31,22 @@ export default function Index() {
   };
 
   const handleNavigate = (section: string) => {
-    if (section === 'battle') {
-      navigate('/battle');
-      return;
+    const routes: Record<string, string> = {
+      battle: '/battle',
+      quests: '/quests',
+      vitality: '/vitality',
+      stats: '/stats',
+      shop: '/shop',
+    };
+    
+    if (routes[section]) {
+      navigate(routes[section]);
+    } else {
+      toast({
+        title: 'Em breve!',
+        description: `O módulo "${section}" será implementado em seguida.`,
+      });
     }
-    if (section === 'quests') {
-      navigate('/quests');
-      return;
-    }
-    if (section === 'vitality') {
-      navigate('/vitality');
-      return;
-    }
-    if (section === 'stats') {
-      navigate('/stats');
-      return;
-    }
-    toast({
-      title: 'Em breve!',
-      description: `O módulo "${section}" será implementado em seguida.`,
-    });
   };
 
   if (authLoading || profileLoading) {
