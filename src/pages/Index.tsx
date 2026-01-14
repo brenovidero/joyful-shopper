@@ -37,6 +37,7 @@ export default function Index() {
       vitality: '/vitality',
       stats: '/stats',
       shop: '/shop',
+      communities: '/communities',
     };
     
     if (routes[section]) {
