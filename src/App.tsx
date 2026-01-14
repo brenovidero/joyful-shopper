@@ -10,6 +10,7 @@ import Battle from "./pages/Battle";
 import Quests from "./pages/Quests";
 import Vitality from "./pages/Vitality";
 import Stats from "./pages/Stats";
+import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/quests" element={<Quests />} />
             <Route path="/vitality" element={<Vitality />} />
             <Route path="/stats" element={<Stats />} />
+            <Route path="/shop" element={<Shop />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
