@@ -239,6 +239,41 @@ export type Database = {
           },
         ]
       }
+      community_messages: {
+        Row: {
+          community_id: string
+          content: string
+          created_at: string
+          id: string
+          media_url: string | null
+          user_id: string
+        }
+        Insert: {
+          community_id: string
+          content: string
+          created_at?: string
+          id?: string
+          media_url?: string | null
+          user_id: string
+        }
+        Update: {
+          community_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          media_url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_messages_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_tasks: {
         Row: {
           community_id: string
@@ -286,6 +321,39 @@ export type Database = {
           },
         ]
       }
+      friendships: {
+        Row: {
+          addressee_id: string
+          best_friend_title: string | null
+          created_at: string
+          id: string
+          is_best_friend: boolean
+          requester_id: string
+          status: Database["public"]["Enums"]["friendship_status"]
+          updated_at: string
+        }
+        Insert: {
+          addressee_id: string
+          best_friend_title?: string | null
+          created_at?: string
+          id?: string
+          is_best_friend?: boolean
+          requester_id: string
+          status?: Database["public"]["Enums"]["friendship_status"]
+          updated_at?: string
+        }
+        Update: {
+          addressee_id?: string
+          best_friend_title?: string | null
+          created_at?: string
+          id?: string
+          is_best_friend?: boolean
+          requester_id?: string
+          status?: Database["public"]["Enums"]["friendship_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       global_catalogs: {
         Row: {
           created_at: string
@@ -324,9 +392,133 @@ export type Database = {
           },
         ]
       }
+      media_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "media_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "media_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_posts: {
+        Row: {
+          catalog_id: string | null
+          comments_count: number
+          community_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_nsfw: boolean
+          likes_count: number
+          media_type: Database["public"]["Enums"]["media_type"]
+          media_url: string
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          catalog_id?: string | null
+          comments_count?: number
+          community_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_nsfw?: boolean
+          likes_count?: number
+          media_type: Database["public"]["Enums"]["media_type"]
+          media_url: string
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          catalog_id?: string | null
+          comments_count?: number
+          community_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_nsfw?: boolean
+          likes_count?: number
+          media_type?: Database["public"]["Enums"]["media_type"]
+          media_url?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_posts_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
+          cover_url: string | null
           created_at: string
           display_name: string | null
           gold: number
@@ -345,6 +537,7 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          cover_url?: string | null
           created_at?: string
           display_name?: string | null
           gold?: number
@@ -363,6 +556,7 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          cover_url?: string | null
           created_at?: string
           display_name?: string | null
           gold?: number
@@ -468,6 +662,62 @@ export type Database = {
           },
         ]
       }
+      shared_tasks: {
+        Row: {
+          completed_at: string | null
+          completed_by: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          due_date: string | null
+          friendship_id: string
+          gold_reward: number
+          id: string
+          status: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at: string
+          xp_reward: number
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          due_date?: string | null
+          friendship_id: string
+          gold_reward?: number
+          id?: string
+          status?: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at?: string
+          xp_reward?: number
+        }
+        Update: {
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          due_date?: string | null
+          friendship_id?: string
+          gold_reward?: number
+          id?: string
+          status?: Database["public"]["Enums"]["task_status"]
+          title?: string
+          updated_at?: string
+          xp_reward?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_tasks_friendship_id_fkey"
+            columns: ["friendship_id"]
+            isOneToOne: false
+            referencedRelation: "friendships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shop_items: {
         Row: {
           cost_gold: number
@@ -535,6 +785,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      user_follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -623,6 +915,8 @@ export type Database = {
       book_status: "active" | "paused" | "completed" | "dropped"
       community_role: "leader" | "vice_leader" | "member"
       community_status: "pending" | "approved" | "rejected"
+      friendship_status: "pending" | "accepted" | "rejected"
+      media_type: "video" | "image"
       player_rank:
         | "adormecido"
         | "desperto"
@@ -764,6 +1058,8 @@ export const Constants = {
       book_status: ["active", "paused", "completed", "dropped"],
       community_role: ["leader", "vice_leader", "member"],
       community_status: ["pending", "approved", "rejected"],
+      friendship_status: ["pending", "accepted", "rejected"],
+      media_type: ["video", "image"],
       player_rank: [
         "adormecido",
         "desperto",
