@@ -13,6 +13,8 @@ import Stats from "./pages/Stats";
 import Shop from "./pages/Shop";
 import Communities from "./pages/Communities";
 import CommunityDetails from "./pages/CommunityDetails";
+import Feed from "./pages/Feed";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +36,8 @@ const App = () => (
             <Route path="/shop" element={<Shop />} />
             <Route path="/communities" element={<Communities />} />
             <Route path="/community/:id" element={<CommunityDetails />} />
+            <Route path="/feed" element={<Feed />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
