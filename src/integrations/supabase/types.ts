@@ -123,6 +123,75 @@ export type Database = {
           },
         ]
       }
+      cardio_sessions: {
+        Row: {
+          avg_heart_rate: number | null
+          avg_speed_kmh: number | null
+          calories_burned: number | null
+          cardio_type: Database["public"]["Enums"]["cardio_type"]
+          distance_meters: number | null
+          duration_minutes: number | null
+          ended_at: string | null
+          id: string
+          max_heart_rate: number | null
+          max_speed_kmh: number | null
+          notes: string | null
+          route_end_lat: number | null
+          route_end_lng: number | null
+          route_polyline: string | null
+          route_start_lat: number | null
+          route_start_lng: number | null
+          started_at: string
+          steps_count: number | null
+          user_id: string
+          xp_earned: number | null
+        }
+        Insert: {
+          avg_heart_rate?: number | null
+          avg_speed_kmh?: number | null
+          calories_burned?: number | null
+          cardio_type: Database["public"]["Enums"]["cardio_type"]
+          distance_meters?: number | null
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          max_heart_rate?: number | null
+          max_speed_kmh?: number | null
+          notes?: string | null
+          route_end_lat?: number | null
+          route_end_lng?: number | null
+          route_polyline?: string | null
+          route_start_lat?: number | null
+          route_start_lng?: number | null
+          started_at?: string
+          steps_count?: number | null
+          user_id: string
+          xp_earned?: number | null
+        }
+        Update: {
+          avg_heart_rate?: number | null
+          avg_speed_kmh?: number | null
+          calories_burned?: number | null
+          cardio_type?: Database["public"]["Enums"]["cardio_type"]
+          distance_meters?: number | null
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          max_heart_rate?: number | null
+          max_speed_kmh?: number | null
+          notes?: string | null
+          route_end_lat?: number | null
+          route_end_lng?: number | null
+          route_polyline?: string | null
+          route_start_lat?: number | null
+          route_start_lng?: number | null
+          started_at?: string
+          steps_count?: number | null
+          user_id?: string
+          xp_earned?: number | null
+        }
+        Relationships: []
+      }
       communities: {
         Row: {
           cover_url: string | null
@@ -392,6 +461,92 @@ export type Database = {
           },
         ]
       }
+      martial_arts_sessions: {
+        Row: {
+          duration_minutes: number | null
+          ended_at: string | null
+          id: string
+          intensity: number | null
+          notes: string | null
+          rounds_completed: number | null
+          sparring: boolean | null
+          started_at: string
+          style_id: string | null
+          techniques_practiced: string[] | null
+          user_id: string
+          xp_earned: number | null
+        }
+        Insert: {
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          intensity?: number | null
+          notes?: string | null
+          rounds_completed?: number | null
+          sparring?: boolean | null
+          started_at?: string
+          style_id?: string | null
+          techniques_practiced?: string[] | null
+          user_id: string
+          xp_earned?: number | null
+        }
+        Update: {
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          intensity?: number | null
+          notes?: string | null
+          rounds_completed?: number | null
+          sparring?: boolean | null
+          started_at?: string
+          style_id?: string | null
+          techniques_practiced?: string[] | null
+          user_id?: string
+          xp_earned?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "martial_arts_sessions_style_id_fkey"
+            columns: ["style_id"]
+            isOneToOne: false
+            referencedRelation: "martial_arts_styles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      martial_arts_styles: {
+        Row: {
+          created_at: string
+          description: string | null
+          equipment: string[] | null
+          id: string
+          image_url: string | null
+          name: string
+          origin_country: string | null
+          techniques: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          equipment?: string[] | null
+          id?: string
+          image_url?: string | null
+          name: string
+          origin_country?: string | null
+          techniques?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          equipment?: string[] | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          origin_country?: string | null
+          techniques?: string[] | null
+        }
+        Relationships: []
+      }
       media_comments: {
         Row: {
           content: string
@@ -514,6 +669,95 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      other_exercise_sessions: {
+        Row: {
+          custom_name: string | null
+          duration_minutes: number | null
+          ended_at: string | null
+          exercise_id: string | null
+          id: string
+          notes: string | null
+          reps_completed: number | null
+          sets_completed: number | null
+          started_at: string
+          user_id: string
+          xp_earned: number | null
+        }
+        Insert: {
+          custom_name?: string | null
+          duration_minutes?: number | null
+          ended_at?: string | null
+          exercise_id?: string | null
+          id?: string
+          notes?: string | null
+          reps_completed?: number | null
+          sets_completed?: number | null
+          started_at?: string
+          user_id: string
+          xp_earned?: number | null
+        }
+        Update: {
+          custom_name?: string | null
+          duration_minutes?: number | null
+          ended_at?: string | null
+          exercise_id?: string | null
+          id?: string
+          notes?: string | null
+          reps_completed?: number | null
+          sets_completed?: number | null
+          started_at?: string
+          user_id?: string
+          xp_earned?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "other_exercise_sessions_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "other_exercises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      other_exercises: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          difficulty: number | null
+          equipment: string[] | null
+          id: string
+          image_url: string | null
+          muscles_worked: string[] | null
+          name: string
+          video_url: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          difficulty?: number | null
+          equipment?: string[] | null
+          id?: string
+          image_url?: string | null
+          muscles_worked?: string[] | null
+          name: string
+          video_url?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          difficulty?: number | null
+          equipment?: string[] | null
+          id?: string
+          image_url?: string | null
+          muscles_worked?: string[] | null
+          name?: string
+          video_url?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -751,6 +995,248 @@ export type Database = {
         }
         Relationships: []
       }
+      strength_exercises: {
+        Row: {
+          category: Database["public"]["Enums"]["exercise_category"]
+          created_at: string
+          created_by: string | null
+          description: string | null
+          difficulty: number | null
+          equipment: string[] | null
+          gif_url: string | null
+          id: string
+          is_custom: boolean | null
+          muscle_primary: string
+          muscles_secondary: string[] | null
+          name: string
+          video_url: string | null
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["exercise_category"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          difficulty?: number | null
+          equipment?: string[] | null
+          gif_url?: string | null
+          id?: string
+          is_custom?: boolean | null
+          muscle_primary: string
+          muscles_secondary?: string[] | null
+          name: string
+          video_url?: string | null
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["exercise_category"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          difficulty?: number | null
+          equipment?: string[] | null
+          gif_url?: string | null
+          id?: string
+          is_custom?: boolean | null
+          muscle_primary?: string
+          muscles_secondary?: string[] | null
+          name?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      strength_session_exercises: {
+        Row: {
+          completed_at: string
+          custom_exercise_id: string | null
+          exercise_id: string | null
+          id: string
+          notes: string | null
+          reps_done: number
+          session_id: string
+          set_number: number
+          weight_kg: number | null
+        }
+        Insert: {
+          completed_at?: string
+          custom_exercise_id?: string | null
+          exercise_id?: string | null
+          id?: string
+          notes?: string | null
+          reps_done: number
+          session_id: string
+          set_number: number
+          weight_kg?: number | null
+        }
+        Update: {
+          completed_at?: string
+          custom_exercise_id?: string | null
+          exercise_id?: string | null
+          id?: string
+          notes?: string | null
+          reps_done?: number
+          session_id?: string
+          set_number?: number
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strength_session_exercises_custom_exercise_id_fkey"
+            columns: ["custom_exercise_id"]
+            isOneToOne: false
+            referencedRelation: "user_custom_exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strength_session_exercises_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "strength_exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strength_session_exercises_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "strength_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strength_sessions: {
+        Row: {
+          duration_minutes: number | null
+          ended_at: string | null
+          exercises_completed: number | null
+          id: string
+          notes: string | null
+          plan_day_id: string | null
+          started_at: string
+          total_reps: number | null
+          total_sets: number | null
+          total_weight_kg: number | null
+          user_id: string
+          xp_earned: number | null
+        }
+        Insert: {
+          duration_minutes?: number | null
+          ended_at?: string | null
+          exercises_completed?: number | null
+          id?: string
+          notes?: string | null
+          plan_day_id?: string | null
+          started_at?: string
+          total_reps?: number | null
+          total_sets?: number | null
+          total_weight_kg?: number | null
+          user_id: string
+          xp_earned?: number | null
+        }
+        Update: {
+          duration_minutes?: number | null
+          ended_at?: string | null
+          exercises_completed?: number | null
+          id?: string
+          notes?: string | null
+          plan_day_id?: string | null
+          started_at?: string
+          total_reps?: number | null
+          total_sets?: number | null
+          total_weight_kg?: number | null
+          user_id?: string
+          xp_earned?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strength_sessions_plan_day_id_fkey"
+            columns: ["plan_day_id"]
+            isOneToOne: false
+            referencedRelation: "workout_plan_days"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      swimming_sessions: {
+        Row: {
+          calories_burned: number | null
+          duration_minutes: number | null
+          ended_at: string | null
+          id: string
+          laps_completed: number | null
+          notes: string | null
+          pool_length_meters: number | null
+          started_at: string
+          style_id: string | null
+          total_distance_meters: number | null
+          user_id: string
+          xp_earned: number | null
+        }
+        Insert: {
+          calories_burned?: number | null
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          laps_completed?: number | null
+          notes?: string | null
+          pool_length_meters?: number | null
+          started_at?: string
+          style_id?: string | null
+          total_distance_meters?: number | null
+          user_id: string
+          xp_earned?: number | null
+        }
+        Update: {
+          calories_burned?: number | null
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          laps_completed?: number | null
+          notes?: string | null
+          pool_length_meters?: number | null
+          started_at?: string
+          style_id?: string | null
+          total_distance_meters?: number | null
+          user_id?: string
+          xp_earned?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "swimming_sessions_style_id_fkey"
+            columns: ["style_id"]
+            isOneToOne: false
+            referencedRelation: "swimming_styles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      swimming_styles: {
+        Row: {
+          created_at: string
+          description: string | null
+          difficulty: number | null
+          id: string
+          image_url: string | null
+          muscles_worked: string[] | null
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          difficulty?: number | null
+          id?: string
+          image_url?: string | null
+          muscles_worked?: string[] | null
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          difficulty?: number | null
+          id?: string
+          image_url?: string | null
+          muscles_worked?: string[] | null
+          name?: string
+        }
+        Relationships: []
+      }
       task_progress: {
         Row: {
           completed_at: string | null
@@ -804,6 +1290,45 @@ export type Database = {
           blocker_id?: string
           created_at?: string
           id?: string
+        }
+        Relationships: []
+      }
+      user_custom_exercises: {
+        Row: {
+          category: Database["public"]["Enums"]["exercise_category"]
+          created_at: string
+          description: string | null
+          equipment: string[] | null
+          gif_url: string | null
+          id: string
+          muscle_primary: string
+          muscles_secondary: string[] | null
+          name: string
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["exercise_category"]
+          created_at?: string
+          description?: string | null
+          equipment?: string[] | null
+          gif_url?: string | null
+          id?: string
+          muscle_primary: string
+          muscles_secondary?: string[] | null
+          name: string
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["exercise_category"]
+          created_at?: string
+          description?: string | null
+          equipment?: string[] | null
+          gif_url?: string | null
+          id?: string
+          muscle_primary?: string
+          muscles_secondary?: string[] | null
+          name?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -887,6 +1412,258 @@ export type Database = {
           },
         ]
       }
+      workout_plan_days: {
+        Row: {
+          created_at: string
+          day_of_week: Database["public"]["Enums"]["workout_day"]
+          id: string
+          name: string | null
+          plan_id: string
+          rest_seconds_between: number | null
+          target_muscles:
+            | Database["public"]["Enums"]["exercise_category"][]
+            | null
+        }
+        Insert: {
+          created_at?: string
+          day_of_week: Database["public"]["Enums"]["workout_day"]
+          id?: string
+          name?: string | null
+          plan_id: string
+          rest_seconds_between?: number | null
+          target_muscles?:
+            | Database["public"]["Enums"]["exercise_category"][]
+            | null
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: Database["public"]["Enums"]["workout_day"]
+          id?: string
+          name?: string | null
+          plan_id?: string
+          rest_seconds_between?: number | null
+          target_muscles?:
+            | Database["public"]["Enums"]["exercise_category"][]
+            | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_plan_days_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "workout_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workout_plan_exercises: {
+        Row: {
+          created_at: string
+          custom_exercise_id: string | null
+          exercise_id: string | null
+          id: string
+          notes: string | null
+          order_index: number
+          plan_day_id: string
+          reps: number
+          rest_seconds: number | null
+          sets: number
+          weight_kg: number | null
+        }
+        Insert: {
+          created_at?: string
+          custom_exercise_id?: string | null
+          exercise_id?: string | null
+          id?: string
+          notes?: string | null
+          order_index?: number
+          plan_day_id: string
+          reps?: number
+          rest_seconds?: number | null
+          sets?: number
+          weight_kg?: number | null
+        }
+        Update: {
+          created_at?: string
+          custom_exercise_id?: string | null
+          exercise_id?: string | null
+          id?: string
+          notes?: string | null
+          order_index?: number
+          plan_day_id?: string
+          reps?: number
+          rest_seconds?: number | null
+          sets?: number
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_plan_exercises_custom_exercise_id_fkey"
+            columns: ["custom_exercise_id"]
+            isOneToOne: false
+            referencedRelation: "user_custom_exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_plan_exercises_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "strength_exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_plan_exercises_plan_day_id_fkey"
+            columns: ["plan_day_id"]
+            isOneToOne: false
+            referencedRelation: "workout_plan_days"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workout_plans: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      yoga_poses: {
+        Row: {
+          benefits: string[] | null
+          category: string | null
+          created_at: string
+          description: string | null
+          difficulty: number | null
+          duration_seconds: number | null
+          id: string
+          image_url: string | null
+          name: string
+          name_sanskrit: string | null
+          video_url: string | null
+        }
+        Insert: {
+          benefits?: string[] | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: number | null
+          duration_seconds?: number | null
+          id?: string
+          image_url?: string | null
+          name: string
+          name_sanskrit?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          benefits?: string[] | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: number | null
+          duration_seconds?: number | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          name_sanskrit?: string | null
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      yoga_session_poses: {
+        Row: {
+          completed_at: string
+          duration_seconds: number | null
+          id: string
+          pose_id: string
+          session_id: string
+        }
+        Insert: {
+          completed_at?: string
+          duration_seconds?: number | null
+          id?: string
+          pose_id: string
+          session_id: string
+        }
+        Update: {
+          completed_at?: string
+          duration_seconds?: number | null
+          id?: string
+          pose_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "yoga_session_poses_pose_id_fkey"
+            columns: ["pose_id"]
+            isOneToOne: false
+            referencedRelation: "yoga_poses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "yoga_session_poses_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "yoga_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      yoga_sessions: {
+        Row: {
+          duration_minutes: number | null
+          ended_at: string | null
+          id: string
+          notes: string | null
+          poses_completed: number | null
+          session_type: string | null
+          started_at: string
+          user_id: string
+          xp_earned: number | null
+        }
+        Insert: {
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          poses_completed?: number | null
+          session_type?: string | null
+          started_at?: string
+          user_id: string
+          xp_earned?: number | null
+        }
+        Update: {
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          poses_completed?: number | null
+          session_type?: string | null
+          started_at?: string
+          user_id?: string
+          xp_earned?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -913,8 +1690,33 @@ export type Database = {
       battle_result: "victory" | "defeat" | "abandoned"
       battle_type: "minion" | "boss"
       book_status: "active" | "paused" | "completed" | "dropped"
+      cardio_type:
+        | "treadmill"
+        | "bike"
+        | "elliptical"
+        | "rowing"
+        | "stairs"
+        | "free_run"
+        | "free_walk"
+        | "free_cycle"
       community_role: "leader" | "vice_leader" | "member"
       community_status: "pending" | "approved" | "rejected"
+      exercise_category:
+        | "chest"
+        | "back"
+        | "shoulders"
+        | "biceps"
+        | "triceps"
+        | "forearms"
+        | "quadriceps"
+        | "hamstrings"
+        | "glutes"
+        | "calves"
+        | "abs"
+        | "obliques"
+        | "lower_back"
+        | "traps"
+        | "lats"
       friendship_status: "pending" | "accepted" | "rejected"
       media_type: "video" | "image"
       player_rank:
@@ -925,6 +1727,14 @@ export type Database = {
         | "arauto"
         | "singularidade"
       task_status: "pending" | "in_progress" | "completed"
+      workout_day:
+        | "monday"
+        | "tuesday"
+        | "wednesday"
+        | "thursday"
+        | "friday"
+        | "saturday"
+        | "sunday"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1056,8 +1866,35 @@ export const Constants = {
       battle_result: ["victory", "defeat", "abandoned"],
       battle_type: ["minion", "boss"],
       book_status: ["active", "paused", "completed", "dropped"],
+      cardio_type: [
+        "treadmill",
+        "bike",
+        "elliptical",
+        "rowing",
+        "stairs",
+        "free_run",
+        "free_walk",
+        "free_cycle",
+      ],
       community_role: ["leader", "vice_leader", "member"],
       community_status: ["pending", "approved", "rejected"],
+      exercise_category: [
+        "chest",
+        "back",
+        "shoulders",
+        "biceps",
+        "triceps",
+        "forearms",
+        "quadriceps",
+        "hamstrings",
+        "glutes",
+        "calves",
+        "abs",
+        "obliques",
+        "lower_back",
+        "traps",
+        "lats",
+      ],
       friendship_status: ["pending", "accepted", "rejected"],
       media_type: ["video", "image"],
       player_rank: [
@@ -1069,6 +1906,15 @@ export const Constants = {
         "singularidade",
       ],
       task_status: ["pending", "in_progress", "completed"],
+      workout_day: [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+      ],
     },
   },
 } as const
