@@ -128,7 +128,7 @@ export function SystemAIChat({ onClose }: SystemAIChatProps) {
               <div className="space-y-1">
                 <p className="font-semibold text-foreground">[SISTEMA ATIVO]</p>
                 <p className="text-sm text-muted-foreground max-w-xs">
-                  Jogador detectado. Aguardando comandos. Posso gerenciar suas missões, leituras, treinos e estudos.
+                  Jogador detectado. Aguardando comandos.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 justify-center">

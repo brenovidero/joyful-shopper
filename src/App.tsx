@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { SystemAIButton } from "@/components/system/SystemAIButton";
+import { SystemAlertProvider } from "@/components/system/SystemAlertProvider";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Battle from "./pages/Battle";
@@ -24,28 +25,30 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/battle" element={<Battle />} />
-            <Route path="/quests" element={<Quests />} />
-            <Route path="/vitality" element={<Vitality />} />
-            <Route path="/stats" element={<Stats />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/communities" element={<Communities />} />
-            <Route path="/community/:id" element={<CommunityDetails />} />
-            <Route path="/feed" element={<Feed />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/study" element={<Study />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <SystemAIButton />
-        </BrowserRouter>
-      </TooltipProvider>
+      <SystemAlertProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/battle" element={<Battle />} />
+              <Route path="/quests" element={<Quests />} />
+              <Route path="/vitality" element={<Vitality />} />
+              <Route path="/stats" element={<Stats />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/communities" element={<Communities />} />
+              <Route path="/community/:id" element={<CommunityDetails />} />
+              <Route path="/feed" element={<Feed />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/study" element={<Study />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <SystemAIButton />
+          </BrowserRouter>
+        </TooltipProvider>
+      </SystemAlertProvider>
     </AuthProvider>
   </QueryClientProvider>
 );
