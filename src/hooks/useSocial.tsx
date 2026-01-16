@@ -9,11 +9,13 @@ export function useSocial() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch user profile by ID
+  // Fetch public profile by ID - usa a view public_profiles para privacidade
+  // Apenas campos básicos são retornados para outros usuários
   const fetchUserProfile = async (userId: string): Promise<PublicProfile | null> => {
+    // Usa a view public_profiles que só expõe campos públicos básicos
     const { data, error } = await supabase
-      .from('profiles')
-      .select('id, display_name, avatar_url, cover_url, level, rank, xp_intelligence, xp_vitality, xp_discipline, total_pages_read, total_battles_won, streak_days')
+      .from('public_profiles')
+      .select('id, display_name, avatar_url, level, rank')
       .eq('id', userId)
       .single();
 

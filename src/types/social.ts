@@ -97,19 +97,24 @@ export interface CommunityMessage {
   user_profile?: PublicProfile;
 }
 
+// Perfil público limitado - usado para exibir informações de outros usuários
+// Não inclui dados sensíveis como XP detalhado, gold, estatísticas de progresso
 export interface PublicProfile {
   id: string;
   display_name: string | null;
   avatar_url: string | null;
-  cover_url: string | null;
   level: number;
   rank: string;
-  xp_intelligence: number;
-  xp_vitality: number;
-  xp_discipline: number;
-  total_pages_read: number;
-  total_battles_won: number;
-  streak_days: number;
+  // Campos opcionais - só disponíveis para o próprio usuário ou admins
+  cover_url?: string | null;
+  xp_intelligence?: number;
+  xp_vitality?: number;
+  xp_discipline?: number;
+  total_pages_read?: number;
+  total_battles_won?: number;
+  streak_days?: number;
+  gold?: number;
+  total_water_ml?: number;
 }
 
 export const FRIENDSHIP_STATUS_LABELS: Record<FriendshipStatus, string> = {
