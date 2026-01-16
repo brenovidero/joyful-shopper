@@ -1,1 +1,13 @@
 project_id = "tntjwkjhuxcshhgvzqmm"
+
+[functions.generate-study-questions]
+verify_jwt = false
+
+[functions.system-ai]
+verify_jwt = false
+
+[functions.system-tts]
+verify_jwt = false
+
+[functions.system-stt]
+verify_jwt = false
