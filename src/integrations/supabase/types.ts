@@ -1679,11 +1679,6 @@ export type Database = {
           max_heart_rate: number | null
           max_speed_kmh: number | null
           notes: string | null
-          route_end_lat: number | null
-          route_end_lng: number | null
-          route_polyline: string | null
-          route_start_lat: number | null
-          route_start_lng: number | null
           started_at: string | null
           steps_count: number | null
           user_id: string | null
@@ -1701,11 +1696,6 @@ export type Database = {
           max_heart_rate?: number | null
           max_speed_kmh?: number | null
           notes?: string | null
-          route_end_lat?: never
-          route_end_lng?: never
-          route_polyline?: never
-          route_start_lat?: never
-          route_start_lng?: never
           started_at?: string | null
           steps_count?: number | null
           user_id?: string | null
@@ -1723,11 +1713,6 @@ export type Database = {
           max_heart_rate?: number | null
           max_speed_kmh?: number | null
           notes?: string | null
-          route_end_lat?: never
-          route_end_lng?: never
-          route_polyline?: never
-          route_start_lat?: never
-          route_start_lng?: never
           started_at?: string | null
           steps_count?: number | null
           user_id?: string | null
