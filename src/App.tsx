@@ -15,6 +15,7 @@ import Communities from "./pages/Communities";
 import CommunityDetails from "./pages/CommunityDetails";
 import Feed from "./pages/Feed";
 import Profile from "./pages/Profile";
+import Study from "./pages/Study";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/community/:id" element={<CommunityDetails />} />
             <Route path="/feed" element={<Feed />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/study" element={<Study />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

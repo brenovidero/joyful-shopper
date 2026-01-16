@@ -1182,6 +1182,112 @@ export type Database = {
           },
         ]
       }
+      study_courses: {
+        Row: {
+          created_at: string
+          current_lesson: number
+          id: string
+          name: string
+          total_lessons: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_lesson?: number
+          id?: string
+          name: string
+          total_lessons?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_lesson?: number
+          id?: string
+          name?: string
+          total_lessons?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      study_diary_entries: {
+        Row: {
+          course_id: string
+          created_at: string
+          entry_date: string
+          id: string
+          subject: string
+          summary: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          entry_date?: string
+          id?: string
+          subject: string
+          summary: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          entry_date?: string
+          id?: string
+          subject?: string
+          summary?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_diary_entries_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "study_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_questions: {
+        Row: {
+          answer: string | null
+          created_at: string
+          diary_entry_id: string
+          id: string
+          is_favorite: boolean
+          question: string
+          user_id: string
+        }
+        Insert: {
+          answer?: string | null
+          created_at?: string
+          diary_entry_id: string
+          id?: string
+          is_favorite?: boolean
+          question: string
+          user_id: string
+        }
+        Update: {
+          answer?: string | null
+          created_at?: string
+          diary_entry_id?: string
+          id?: string
+          is_favorite?: boolean
+          question?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_questions_diary_entry_id_fkey"
+            columns: ["diary_entry_id"]
+            isOneToOne: false
+            referencedRelation: "study_diary_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       swimming_sessions: {
         Row: {
           calories_burned: number | null

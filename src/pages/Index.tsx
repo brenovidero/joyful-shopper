@@ -38,6 +38,7 @@ export default function Index() {
       stats: '/stats',
       shop: '/shop',
       communities: '/communities',
+      study: '/study',
     };
     
     if (routes[section]) {
