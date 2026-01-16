@@ -1,4 +1,4 @@
-import { Profile, RANK_CONFIG, calculateXPForLevel, getTotalXP } from '@/types/rpg';
+import { Profile, RANK_CONFIG, getSkillLevelFromXP, getCharacterLevelFromXP, getTotalXP } from '@/types/rpg';
 import { XPBar } from './XPBar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Brain, Heart, Zap, Coins, Flame } from 'lucide-react';
@@ -11,9 +11,14 @@ interface PlayerCardProps {
 export function PlayerCard({ profile }: PlayerCardProps) {
   const rankConfig = RANK_CONFIG[profile.rank];
   const totalXP = getTotalXP(profile);
-  const xpForNextLevel = calculateXPForLevel(profile.level + 1);
-  const xpForCurrentLevel = calculateXPForLevel(profile.level);
-  const levelProgress = ((totalXP - xpForCurrentLevel) / (xpForNextLevel - xpForCurrentLevel)) * 100;
+  
+  // Calcular nível do personagem e progresso
+  const characterProgress = getCharacterLevelFromXP(totalXP);
+  
+  // Calcular níveis individuais das skills
+  const intProgress = getSkillLevelFromXP(profile.xp_intelligence);
+  const vitProgress = getSkillLevelFromXP(profile.xp_vitality);
+  const disProgress = getSkillLevelFromXP(profile.xp_discipline);
 
   return (
     <div className="relative overflow-hidden rounded-2xl bg-card border border-border/50">
@@ -37,7 +42,7 @@ export function PlayerCard({ profile }: PlayerCardProps) {
             </Avatar>
             {/* Level badge */}
             <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full shadow">
-              Nv.{profile.level}
+              Nv.{characterProgress.level}
             </div>
           </div>
           
@@ -54,11 +59,11 @@ export function PlayerCard({ profile }: PlayerCardProps) {
               <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-500"
-                  style={{ width: `${Math.max(0, Math.min(100, levelProgress))}%` }}
+                  style={{ width: `${characterProgress.progress}%` }}
                 />
               </div>
               <p className="text-[10px] text-muted-foreground mt-0.5">
-                {totalXP.toLocaleString()} XP Total
+                {characterProgress.currentLevelXP.toLocaleString()} / {characterProgress.xpForNextLevel.toLocaleString()} XP
               </p>
             </div>
           </div>
@@ -80,28 +85,31 @@ export function PlayerCard({ profile }: PlayerCardProps) {
           </div>
         </div>
 
-        {/* XP Bars */}
+        {/* XP Bars com níveis individuais */}
         <div className="space-y-3">
           <XPBar
             label="Inteligência"
-            current={profile.xp_intelligence}
-            max={xpForNextLevel}
+            current={intProgress.currentLevelXP}
+            max={intProgress.xpForNextLevel}
             color="intelligence"
             icon={<Brain className="h-3.5 w-3.5" />}
+            level={intProgress.level}
           />
           <XPBar
             label="Vitalidade"
-            current={profile.xp_vitality}
-            max={xpForNextLevel}
+            current={vitProgress.currentLevelXP}
+            max={vitProgress.xpForNextLevel}
             color="vitality"
             icon={<Heart className="h-3.5 w-3.5" />}
+            level={vitProgress.level}
           />
           <XPBar
             label="Disciplina"
-            current={profile.xp_discipline}
-            max={xpForNextLevel}
+            current={disProgress.currentLevelXP}
+            max={disProgress.xpForNextLevel}
             color="discipline"
             icon={<Zap className="h-3.5 w-3.5" />}
+            level={disProgress.level}
           />
         </div>
       </div>
