@@ -284,14 +284,14 @@ export function CardioTracker({
             />
           </div>
 
-          {/* GPS Map indicator for free cardio */}
+          {/* GPS indicator for free cardio - coordinates hidden for privacy */}
           {isFree && position && (
             <div className="bg-background/50 rounded-lg p-3 flex items-center gap-3">
               <MapPin className="w-5 h-5 text-primary" />
               <div className="text-sm">
                 <p className="font-medium">GPS Ativo</p>
                 <p className="text-muted-foreground text-xs">
-                  {position.coords.latitude.toFixed(4)}, {position.coords.longitude.toFixed(4)}
+                  Rastreando sua rota (protegido)
                 </p>
               </div>
             </div>

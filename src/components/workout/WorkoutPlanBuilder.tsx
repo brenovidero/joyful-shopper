@@ -25,7 +25,7 @@ interface WorkoutPlanBuilderProps {
   exercises: StrengthExercise[];
   onAddDay: (dayOfWeek: WorkoutDay, name: string, targetMuscles: ExerciseCategory[]) => Promise<any>;
   onRemoveDay: (dayId: string) => Promise<boolean>;
-  onAddExercise: (planDayId: string, exerciseId: string, sets: number, reps: number, weight?: number) => Promise<boolean>;
+  onAddExercise: (planDayId: string, exerciseId: string | null, customExerciseId: string | null, sets: number, reps: number, weight?: number) => Promise<boolean>;
   onRemoveExercise: (exerciseId: string) => Promise<boolean>;
 }
 
@@ -79,7 +79,7 @@ export function WorkoutPlanBuilder({
 
   const handleAddExercise = async () => {
     if (!selectedExercise || !addExerciseDialog.dayId) return;
-    await onAddExercise(addExerciseDialog.dayId, selectedExercise.id, sets, reps, weight);
+    await onAddExercise(addExerciseDialog.dayId, selectedExercise.id, null, sets, reps, weight);
     setAddExerciseDialog({ open: false, dayId: null });
     setSelectedExercise(null);
     setSets(3);

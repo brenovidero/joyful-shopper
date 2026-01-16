@@ -1666,9 +1666,84 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      cardio_sessions_safe: {
+        Row: {
+          avg_heart_rate: number | null
+          avg_speed_kmh: number | null
+          calories_burned: number | null
+          cardio_type: Database["public"]["Enums"]["cardio_type"] | null
+          distance_meters: number | null
+          duration_minutes: number | null
+          ended_at: string | null
+          id: string | null
+          max_heart_rate: number | null
+          max_speed_kmh: number | null
+          notes: string | null
+          route_end_lat: number | null
+          route_end_lng: number | null
+          route_polyline: string | null
+          route_start_lat: number | null
+          route_start_lng: number | null
+          started_at: string | null
+          steps_count: number | null
+          user_id: string | null
+          xp_earned: number | null
+        }
+        Insert: {
+          avg_heart_rate?: number | null
+          avg_speed_kmh?: number | null
+          calories_burned?: number | null
+          cardio_type?: Database["public"]["Enums"]["cardio_type"] | null
+          distance_meters?: number | null
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string | null
+          max_heart_rate?: number | null
+          max_speed_kmh?: number | null
+          notes?: string | null
+          route_end_lat?: never
+          route_end_lng?: never
+          route_polyline?: never
+          route_start_lat?: never
+          route_start_lng?: never
+          started_at?: string | null
+          steps_count?: number | null
+          user_id?: string | null
+          xp_earned?: number | null
+        }
+        Update: {
+          avg_heart_rate?: number | null
+          avg_speed_kmh?: number | null
+          calories_burned?: number | null
+          cardio_type?: Database["public"]["Enums"]["cardio_type"] | null
+          distance_meters?: number | null
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string | null
+          max_heart_rate?: number | null
+          max_speed_kmh?: number | null
+          notes?: string | null
+          route_end_lat?: never
+          route_end_lng?: never
+          route_polyline?: never
+          route_start_lat?: never
+          route_start_lng?: never
+          started_at?: string | null
+          steps_count?: number | null
+          user_id?: string | null
+          xp_earned?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      fuzzy_location: {
+        Args: { lat: number; lng: number }
+        Returns: {
+          fuzzy_lat: number
+          fuzzy_lng: number
+        }[]
+      }
       has_community_role: {
         Args: {
           _community_id: string
