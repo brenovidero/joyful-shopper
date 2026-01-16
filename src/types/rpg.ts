@@ -7,6 +7,7 @@ export interface Profile {
   id: string;
   display_name: string | null;
   avatar_url: string | null;
+  cover_url?: string | null;
   level: number;
   rank: PlayerRank;
   xp_intelligence: number;
@@ -72,15 +73,144 @@ export const RANK_CONFIG: Record<PlayerRank, { label: string; minLevel: number; 
   singularidade: { label: 'Singularidade', minLevel: 100, maxLevel: 999, color: 'text-rose-400', aura: 'from-rose-500/20' },
 };
 
-export const XP_MULTIPLIER = 1.15; // 15% increase per level
-export const BASE_XP_PER_LEVEL = 100;
+// ============= SISTEMA DE PROGRESSÃO =============
 
-export function calculateXPForLevel(level: number): number {
-  return Math.floor(BASE_XP_PER_LEVEL * Math.pow(XP_MULTIPLIER, level - 1));
+// Constantes para nível de personagem (mais fácil)
+export const CHARACTER_BASE_XP = 100;
+export const CHARACTER_XP_MULTIPLIER = 1.12; // 12% de aumento por nível
+
+// Constantes para níveis de skill (mais difícil)
+export const SKILL_BASE_XP = 150;
+export const SKILL_XP_MULTIPLIER = 1.18; // 18% de aumento por nível (mais difícil)
+
+/**
+ * Calcula o XP necessário para subir do nível atual para o próximo (Personagem)
+ * Fórmula: BASE_XP * MULTIPLIER^(level-1)
+ */
+export function calculateCharacterXPForLevel(level: number): number {
+  return Math.floor(CHARACTER_BASE_XP * Math.pow(CHARACTER_XP_MULTIPLIER, level - 1));
 }
 
+/**
+ * Calcula o XP total acumulado até um nível (Personagem)
+ */
+export function getTotalXPForCharacterLevel(level: number): number {
+  let total = 0;
+  for (let i = 1; i < level; i++) {
+    total += calculateCharacterXPForLevel(i);
+  }
+  return total;
+}
+
+/**
+ * Calcula o XP necessário para subir do nível atual para o próximo (Skill)
+ * Skills são mais difíceis de subir que o nível geral
+ */
+export function calculateSkillXPForLevel(level: number): number {
+  return Math.floor(SKILL_BASE_XP * Math.pow(SKILL_XP_MULTIPLIER, level - 1));
+}
+
+/**
+ * Calcula o XP total acumulado até um nível (Skill)
+ */
+export function getTotalXPForSkillLevel(level: number): number {
+  let total = 0;
+  for (let i = 1; i < level; i++) {
+    total += calculateSkillXPForLevel(i);
+  }
+  return total;
+}
+
+/**
+ * Dado um XP total de skill, calcula o nível atual e o progresso para o próximo
+ */
+export function getSkillLevelFromXP(totalXP: number): {
+  level: number;
+  currentLevelXP: number;
+  xpForNextLevel: number;
+  progress: number;
+} {
+  let level = 1;
+  let accumulatedXP = 0;
+  
+  while (true) {
+    const xpNeeded = calculateSkillXPForLevel(level);
+    if (accumulatedXP + xpNeeded > totalXP) {
+      // Ainda neste nível
+      const currentLevelXP = totalXP - accumulatedXP;
+      const progress = (currentLevelXP / xpNeeded) * 100;
+      return {
+        level,
+        currentLevelXP,
+        xpForNextLevel: xpNeeded,
+        progress: Math.min(progress, 100),
+      };
+    }
+    accumulatedXP += xpNeeded;
+    level++;
+    
+    // Limite de segurança
+    if (level > 999) break;
+  }
+  
+  return { level: 999, currentLevelXP: 0, xpForNextLevel: 1, progress: 100 };
+}
+
+/**
+ * Dado o XP total de todas as skills, calcula o nível do personagem e progresso
+ * O nível do personagem é baseado na média ponderada dos níveis das skills
+ */
+export function getCharacterLevelFromXP(totalXP: number): {
+  level: number;
+  currentLevelXP: number;
+  xpForNextLevel: number;
+  progress: number;
+} {
+  let level = 1;
+  let accumulatedXP = 0;
+  
+  while (true) {
+    const xpNeeded = calculateCharacterXPForLevel(level);
+    if (accumulatedXP + xpNeeded > totalXP) {
+      const currentLevelXP = totalXP - accumulatedXP;
+      const progress = (currentLevelXP / xpNeeded) * 100;
+      return {
+        level,
+        currentLevelXP,
+        xpForNextLevel: xpNeeded,
+        progress: Math.min(progress, 100),
+      };
+    }
+    accumulatedXP += xpNeeded;
+    level++;
+    
+    if (level > 999) break;
+  }
+  
+  return { level: 999, currentLevelXP: 0, xpForNextLevel: 1, progress: 100 };
+}
+
+/**
+ * Retorna o XP total de todas as skills
+ */
 export function getTotalXP(profile: Profile): number {
   return profile.xp_intelligence + profile.xp_vitality + profile.xp_discipline;
+}
+
+/**
+ * Calcula o nível do personagem baseado no XP total
+ */
+export function calculateCharacterLevel(profile: Profile): number {
+  const totalXP = getTotalXP(profile);
+  return getCharacterLevelFromXP(totalXP).level;
+}
+
+// Mantido para compatibilidade
+export const XP_MULTIPLIER = CHARACTER_XP_MULTIPLIER;
+export const BASE_XP_PER_LEVEL = CHARACTER_BASE_XP;
+
+export function calculateXPForLevel(level: number): number {
+  return calculateCharacterXPForLevel(level);
 }
 
 export function getRankFromLevel(level: number): PlayerRank {
