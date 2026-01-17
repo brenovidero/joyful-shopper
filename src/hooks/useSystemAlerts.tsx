@@ -11,7 +11,11 @@ type AlertType =
   | 'level_up'
   | 'task_completed'
   | 'reading_logged'
-  | 'workout_logged';
+  | 'workout_logged'
+  | 'battle_victory'
+  | 'battle_defeat'
+  | 'daily_goal_completed'
+  | 'study_session_completed';
 
 interface AlertConfig {
   message: string;
@@ -46,15 +50,40 @@ const alertMessages: Record<AlertType, (data?: any) => AlertConfig> = {
   workout_logged: (data) => ({
     message: `[SISTEMA] Treino ${data?.type || ''} registrado. +${data?.xp || 50} XP Vitalidade.`,
     showToast: false
+  }),
+  battle_victory: (data) => ({
+    message: `[VITÓRIA] Batalha ${data?.type === 'boss' ? 'contra BOSS' : ''} concluída. +${data?.xp || 100} XP. +${data?.gold || 25} Gold. ${data?.type === 'boss' ? 'O Sistema reconhece sua força.' : 'Oponente eliminado.'}`,
+    showToast: true
+  }),
+  battle_defeat: (data) => ({
+    message: `[DERROTA] Batalha abandonada. Sem recompensas. ${data?.message || 'Fraqueza detectada. Melhore.'}`,
+    showToast: true
+  }),
+  daily_goal_completed: (data) => ({
+    message: `[META DIÁRIA ATINGIDA] ${data?.goal || 'Meta'} concluída. +${data?.xp || 75} XP bônus. O Sistema aprova sua disciplina.`,
+    showToast: true
+  }),
+  study_session_completed: (data) => ({
+    message: `[ESTUDO CONCLUÍDO] Sessão de ${data?.duration || '?'} minutos. +${data?.xp || 50} XP Inteligência. Conhecimento é poder.`,
+    showToast: true
   })
 };
 
 export function useSystemAlerts() {
   const { toast } = useToast();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isSpeakingRef = useRef(false);
 
   const speak = useCallback(async (text: string) => {
+    if (isSpeakingRef.current) {
+      console.log('[ALERT] Already speaking, skipping...');
+      return;
+    }
+
     try {
+      isSpeakingRef.current = true;
+      console.log('[ALERT] Calling TTS for:', text.substring(0, 50) + '...');
+      
       const response = await fetch(`${SUPABASE_URL}/functions/v1/system-tts`, {
         method: 'POST',
         headers: {
@@ -66,7 +95,9 @@ export function useSystemAlerts() {
       });
 
       if (!response.ok) {
-        console.error('[ALERT] TTS failed');
+        const errorText = await response.text();
+        console.error('[ALERT] TTS failed:', response.status, errorText);
+        isSpeakingRef.current = false;
         return;
       }
 
@@ -83,16 +114,25 @@ export function useSystemAlerts() {
 
       audio.onended = () => {
         URL.revokeObjectURL(audioUrl);
+        isSpeakingRef.current = false;
+      };
+
+      audio.onerror = () => {
+        URL.revokeObjectURL(audioUrl);
+        isSpeakingRef.current = false;
       };
 
       await audio.play();
+      console.log('[ALERT] Audio playing...');
     } catch (error) {
       console.error('[ALERT] Error speaking:', error);
+      isSpeakingRef.current = false;
     }
   }, []);
 
   const triggerAlert = useCallback(async (type: AlertType, data?: any) => {
     const config = alertMessages[type](data);
+    console.log('[ALERT] Triggering:', type, config.message);
     
     if (config.showToast) {
       toast({
@@ -125,6 +165,22 @@ export function useSystemAlerts() {
     triggerAlert('task_completed', { task, xp, gold });
   }, [triggerAlert]);
 
+  const battleVictory = useCallback((type: 'minion' | 'boss', xp: number, gold: number) => {
+    triggerAlert('battle_victory', { type, xp, gold });
+  }, [triggerAlert]);
+
+  const battleDefeat = useCallback((message?: string) => {
+    triggerAlert('battle_defeat', { message });
+  }, [triggerAlert]);
+
+  const dailyGoalCompleted = useCallback((goal: string, xp = 75) => {
+    triggerAlert('daily_goal_completed', { goal, xp });
+  }, [triggerAlert]);
+
+  const studySessionCompleted = useCallback((duration: number, xp = 50) => {
+    triggerAlert('study_session_completed', { duration, xp });
+  }, [triggerAlert]);
+
   return {
     triggerAlert,
     welcomeBack,
@@ -132,6 +188,10 @@ export function useSystemAlerts() {
     questCompleted,
     levelUp,
     taskCompleted,
+    battleVictory,
+    battleDefeat,
+    dailyGoalCompleted,
+    studySessionCompleted,
     speak
   };
 }
