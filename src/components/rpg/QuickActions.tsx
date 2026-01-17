@@ -1,4 +1,4 @@
-import { Book, Swords, Heart, BarChart3, ShoppingBag, Users } from 'lucide-react';
+import { Book, Swords, Heart, BarChart3, ShoppingBag, Users, GraduationCap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface QuickAction {
@@ -40,6 +40,14 @@ export function QuickActions({ onNavigate }: QuickActionsProps) {
       color: 'text-cyan-400',
       bgColor: 'bg-cyan-500/20 hover:bg-cyan-500/30',
       onClick: () => onNavigate('vitality'),
+    },
+    {
+      id: 'study',
+      icon: <GraduationCap className="h-6 w-6" />,
+      label: 'Estudos',
+      color: 'text-emerald-400',
+      bgColor: 'bg-emerald-500/20 hover:bg-emerald-500/30',
+      onClick: () => onNavigate('study'),
     },
     {
       id: 'stats',

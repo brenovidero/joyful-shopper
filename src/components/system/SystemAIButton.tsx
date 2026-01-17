@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,13 @@ import { SystemAIChat } from './SystemAIChat';
 
 export function SystemAIButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <>
@@ -21,7 +28,7 @@ export function SystemAIButton() {
           className="h-14 w-14 rounded-full shadow-lg shadow-primary/30 bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border border-primary/50"
           size="icon"
         >
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             {isOpen ? (
               <motion.div
                 key="close"
@@ -49,7 +56,7 @@ export function SystemAIButton() {
         {/* Pulsing ring effect */}
         {!isOpen && (
           <motion.div
-            className="absolute inset-0 rounded-full border-2 border-primary/50"
+            className="absolute inset-0 rounded-full border-2 border-primary/50 pointer-events-none"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.5, 0, 0.5]
@@ -64,9 +71,9 @@ export function SystemAIButton() {
       </motion.div>
 
       {/* Chat Panel */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isOpen && (
-          <SystemAIChat onClose={() => setIsOpen(false)} />
+          <SystemAIChat key="system-ai-chat" onClose={() => setIsOpen(false)} />
         )}
       </AnimatePresence>
     </>
