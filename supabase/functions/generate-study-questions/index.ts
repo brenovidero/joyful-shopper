@@ -11,13 +11,70 @@ serve(async (req) => {
   }
 
   try {
-    const { summary, subject } = await req.json();
+    const body = await req.json();
+    const { mode, summary, subject, skill_name, day_number, title } = body;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
+    // Mode: generate_log - Generate skill log content
+    if (mode === 'generate_log') {
+      if (!skill_name || !title) {
+        return new Response(
+          JSON.stringify({ error: "skill_name and title are required" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const logPrompt = `Você é um assistente de aprendizado que ajuda estudantes a documentar seu progresso diário.
+
+Gere um resumo de aprendizado para o dia ${day_number || 1} de estudo de "${skill_name}".
+O título do estudo de hoje é: "${title}"
+
+Crie um resumo conciso mas informativo (3-5 parágrafos) que inclua:
+1. O que foi estudado/praticado
+2. Conceitos-chave aprendidos
+3. Desafios encontrados (se aplicável)
+4. Próximos passos ou coisas para revisar
+
+Escreva em primeira pessoa, como se fosse o próprio estudante registrando seu progresso.
+Use linguagem natural e motivadora. Responda APENAS com o texto do resumo, sem formatação extra.`;
+
+      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-3-flash-preview",
+          messages: [
+            { role: "user", content: logPrompt },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("AI gateway error:", response.status, errorText);
+        return new Response(
+          JSON.stringify({ error: "AI gateway error" }),
+          { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content || "";
+      
+      return new Response(
+        JSON.stringify({ content }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Default mode: generate questions
     if (!summary) {
       return new Response(
         JSON.stringify({ error: "Summary is required" }),

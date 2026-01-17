@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   GraduationCap, 
   Plus, 
@@ -12,6 +12,8 @@ import {
   Edit2,
   Check,
   X,
+  Zap,
+  Trophy,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +21,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useStudy } from '@/hooks/useStudy';
+import { useSkills } from '@/hooks/useSkills';
 import { StudyCourse } from '@/types/study';
+import { StudySkill } from '@/types/skill';
 
 import { AddCourseModal } from '@/components/study/AddCourseModal';
 import { CourseCard } from '@/components/study/CourseCard';
@@ -28,6 +32,13 @@ import { AddDiaryEntryModal } from '@/components/study/AddDiaryEntryModal';
 import { DiaryEntryCard } from '@/components/study/DiaryEntryCard';
 import { QuestionCard } from '@/components/study/QuestionCard';
 import { GeneratedQuestionsModal } from '@/components/study/GeneratedQuestionsModal';
+
+// Skills components
+import { AddSkillModal } from '@/components/study/AddSkillModal';
+import { AddSkillLogModal } from '@/components/study/AddSkillLogModal';
+import { SkillCard } from '@/components/study/SkillCard';
+import { SkillLogsView } from '@/components/study/SkillLogsView';
+import { SkillTrophyCard } from '@/components/study/SkillTrophyCard';
 
 export default function Study() {
   const navigate = useNavigate();
@@ -49,6 +60,18 @@ export default function Study() {
     fetchQuestions,
   } = useStudy();
 
+  const {
+    activeSkills,
+    completedSkills,
+    logs,
+    loading: skillsLoading,
+    createSkill,
+    addSkillLog,
+    deleteSkill,
+    deleteLog,
+    fetchLogs,
+  } = useSkills();
+
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showAddCourse, setShowAddCourse] = useState(false);
   const [showAddDiary, setShowAddDiary] = useState(false);
@@ -56,6 +79,12 @@ export default function Study() {
   const [editingCourse, setEditingCourse] = useState<StudyCourse | null>(null);
   const [editName, setEditName] = useState('');
   const [editTotalLessons, setEditTotalLessons] = useState(0);
+
+  // Skills state
+  const [showAddSkill, setShowAddSkill] = useState(false);
+  const [showAddSkillLog, setShowAddSkillLog] = useState(false);
+  const [selectedSkill, setSelectedSkill] = useState<StudySkill | null>(null);
+  const [viewingSkillLogs, setViewingSkillLogs] = useState<StudySkill | null>(null);
 
   // Generated questions modal state
   const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([]);
@@ -134,11 +163,9 @@ export default function Study() {
   const handleSaveAsFavorites = async (selectedQuestions: string[]) => {
     if (!generatedForEntryId || !user) return { error: new Error('No entry selected') };
     
-    // First save the questions
     const result = await saveQuestions(generatedForEntryId, selectedQuestions);
     if (result.error) return result;
 
-    // Then mark them as favorites (need to fetch and update)
     await fetchQuestions();
     
     toast({ title: 'Questões salvas como favoritas!' });
@@ -157,12 +184,48 @@ export default function Study() {
     toast({ title: 'Questão excluída!' });
   };
 
+  // Skills handlers
+  const handleCreateSkill = async (name: string, targetDays: number) => {
+    const result = await createSkill(name, targetDays);
+    if (!result.error) {
+      toast({ title: 'Habilidade criada!' });
+    }
+  };
+
+  const handleAddSkillLog = async (skillId: string, title: string, content: string) => {
+    const result = await addSkillLog(skillId, title, content);
+    if (!result.error) {
+      toast({ title: 'Dia registrado!' });
+    }
+    return result;
+  };
+
+  const handleDeleteSkill = async (skillId: string) => {
+    const result = await deleteSkill(skillId);
+    if (!result.error) {
+      toast({ title: 'Habilidade excluída!' });
+    }
+  };
+
+  const handleViewSkillLogs = (skill: StudySkill) => {
+    setViewingSkillLogs(skill);
+    fetchLogs(skill.id);
+  };
+
+  const handleDeleteSkillLog = async (logId: string) => {
+    if (!viewingSkillLogs) return;
+    const result = await deleteLog(logId, viewingSkillLogs.id);
+    if (!result.error) {
+      toast({ title: 'Registro excluído!' });
+    }
+  };
+
   const favoriteQuestions = questions.filter(q => q.is_favorite);
   const filteredDiaryEntries = selectedCourse 
     ? diaryEntries.filter(e => e.course_id === selectedCourse.id)
     : diaryEntries;
 
-  if (authLoading || loading) {
+  if (authLoading || loading || skillsLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-pulse text-muted-foreground">Carregando...</div>
@@ -187,15 +250,11 @@ export default function Study() {
                 <div>
                   <h1 className="text-xl font-bold">Academia de Estudos</h1>
                   <p className="text-sm text-muted-foreground">
-                    {courses.length} cursos
+                    {courses.length} cursos · {activeSkills.length} habilidades ativas
                   </p>
                 </div>
               </div>
             </div>
-            <Button onClick={() => setShowAddCourse(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Novo Curso
-            </Button>
           </div>
         </div>
       </header>
@@ -203,7 +262,7 @@ export default function Study() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 flex-wrap h-auto gap-1">
             <TabsTrigger value="dashboard" className="gap-2">
               <BookOpen className="w-4 h-4" />
               Dashboard
@@ -211,6 +270,14 @@ export default function Study() {
             <TabsTrigger value="courses" className="gap-2">
               <GraduationCap className="w-4 h-4" />
               Cursos
+            </TabsTrigger>
+            <TabsTrigger value="skills" className="gap-2">
+              <Zap className="w-4 h-4" />
+              Habilidades
+            </TabsTrigger>
+            <TabsTrigger value="trophies" className="gap-2">
+              <Trophy className="w-4 h-4" />
+              Troféus
             </TabsTrigger>
             <TabsTrigger value="diary" className="gap-2">
               <FileText className="w-4 h-4" />
@@ -230,6 +297,12 @@ export default function Study() {
           {/* Courses Tab */}
           <TabsContent value="courses">
             <div className="space-y-4">
+              <div className="flex justify-end">
+                <Button onClick={() => setShowAddCourse(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Novo Curso
+                </Button>
+              </div>
               {courses.length === 0 ? (
                 <div className="text-center py-12">
                   <GraduationCap className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
@@ -322,6 +395,89 @@ export default function Study() {
                     </div>
                   ))}
                 </div>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Skills Tab */}
+          <TabsContent value="skills">
+            <div className="space-y-4">
+              {viewingSkillLogs ? (
+                <SkillLogsView
+                  skill={viewingSkillLogs}
+                  logs={logs}
+                  onBack={() => setViewingSkillLogs(null)}
+                  onDeleteLog={handleDeleteSkillLog}
+                />
+              ) : (
+                <>
+                  <div className="flex justify-end">
+                    <Button onClick={() => setShowAddSkill(true)}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Nova Habilidade
+                    </Button>
+                  </div>
+
+                  {activeSkills.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Zap className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                      <h3 className="font-semibold mb-2">Nenhuma habilidade ativa</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Crie uma habilidade e registre seu progresso diário
+                      </p>
+                      <Button onClick={() => setShowAddSkill(true)}>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Criar Habilidade
+                      </Button>
+                    </div>
+                  ) : (
+                    <AnimatePresence mode="popLayout">
+                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {activeSkills.map((skill) => (
+                          <SkillCard
+                            key={skill.id}
+                            skill={skill}
+                            onAddLog={() => {
+                              setSelectedSkill(skill);
+                              setShowAddSkillLog(true);
+                            }}
+                            onDelete={() => handleDeleteSkill(skill.id)}
+                            onViewLogs={() => handleViewSkillLogs(skill)}
+                          />
+                        ))}
+                      </div>
+                    </AnimatePresence>
+                  )}
+                </>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Trophies Tab */}
+          <TabsContent value="trophies">
+            <div className="space-y-4">
+              {completedSkills.length === 0 ? (
+                <div className="text-center py-12">
+                  <Trophy className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="font-semibold mb-2">Nenhum troféu ainda</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Complete uma habilidade para ganhar seu primeiro troféu!
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-bold mb-2">🏆 Hall da Fama</h2>
+                    <p className="text-muted-foreground">
+                      {completedSkills.length} habilidade{completedSkills.length > 1 ? 's' : ''} conquistada{completedSkills.length > 1 ? 's' : ''}
+                    </p>
+                  </div>
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {completedSkills.map((skill, index) => (
+                      <SkillTrophyCard key={skill.id} skill={skill} index={index} />
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           </TabsContent>
@@ -435,6 +591,19 @@ export default function Study() {
         questions={generatedQuestions}
         onSave={handleSaveGeneratedQuestions}
         onSaveAsFavorites={handleSaveAsFavorites}
+      />
+
+      <AddSkillModal
+        open={showAddSkill}
+        onOpenChange={setShowAddSkill}
+        onSubmit={handleCreateSkill}
+      />
+
+      <AddSkillLogModal
+        open={showAddSkillLog}
+        onOpenChange={setShowAddSkillLog}
+        skill={selectedSkill}
+        onSubmit={handleAddSkillLog}
       />
     </div>
   );

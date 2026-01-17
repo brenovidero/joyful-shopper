@@ -1288,6 +1288,83 @@ export type Database = {
           },
         ]
       }
+      study_skill_logs: {
+        Row: {
+          content: string
+          created_at: string
+          day_number: number
+          id: string
+          log_date: string
+          skill_id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          day_number: number
+          id?: string
+          log_date?: string
+          skill_id: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          day_number?: number
+          id?: string
+          log_date?: string
+          skill_id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_skill_logs_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "study_skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_skills: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          current_day: number
+          id: string
+          is_completed: boolean
+          name: string
+          target_days: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          current_day?: number
+          id?: string
+          is_completed?: boolean
+          name: string
+          target_days?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          current_day?: number
+          id?: string
+          is_completed?: boolean
+          name?: string
+          target_days?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       swimming_sessions: {
         Row: {
           calories_burned: number | null
